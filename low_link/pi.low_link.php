@@ -155,14 +155,20 @@ class Low_link {
 
 		if (isset($this->EE->session->cache['channel'][$site_id][$field]))
 		{
-			$sql_select[] = 'd.field_id_'.$this->EE->session->cache['channel'][$site_id][$field].' AS word';
+			$sql_attr = 'd.field_id_'.$this->EE->session->cache['channel'][$site_id][$field];
 			$data_join = TRUE;
 		}
 		else
 		{
-			$sql_select[] = 't.title AS word';
+			$sql_attr = 't.title';
 			$data_join = FALSE;
 		}
+
+		// --------------------------------------
+		// Insert generic @monooso mockery here
+		// --------------------------------------
+
+		$sql_select[] = $sql_attr.' AS word';
 
 		// --------------------------------------
 		// Query DB to lookup words
@@ -171,7 +177,7 @@ class Low_link {
 		$this->EE->db->select(implode(',', $sql_select))
 		              ->from('channel_titles t')
 		              ->where('t.site_id', $site_id)
-		              ->where_in('t.title', $lookup);
+		              ->where_in($sql_attr, $lookup);
 		
 		// Filter words by channel
 		if ($channel)
